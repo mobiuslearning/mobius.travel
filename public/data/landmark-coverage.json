@@ -1,0 +1,17 @@
+{
+  "records": 10933,
+  "countries": 185,
+  "china": 3493,
+  "categories": {
+    "nature": 2168,
+    "landmark": 2502,
+    "historic": 4008,
+    "park": 1096,
+    "museum": 1159
+  },
+  "retrieved": "2026-10-24",
+  "source": "Wikidata",
+  "license": "CC0",
+  "sourceUrl": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+  "chinaCities": 370
+}
