@@ -6,11 +6,13 @@
     "dev": "astro dev --host 0.0.0.0",
     "build": "astro build",
     "preview": "astro preview --host 0.0.0.0",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "node --test tests/geography.test.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.0",
     "astro": "^7.4.2",
+    "i18n-iso-countries": "^7.14.0",
     "lucide": "^0.468.0",
     "tailwindcss": "^4.1.0",
     "three": "^0.180.0",

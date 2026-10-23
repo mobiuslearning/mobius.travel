@@ -1,4 +1,4 @@
-export type Place = { id:string; name:string; en:string; location:string; category:string; tag:string; image:string; lat:number; lon:number; country:string; tagline:string; description:string; story:string; facts:string[][]; source:string; model:string; path?:number[] };
+export type Place = { id:string; name:string; en:string; location:string; category:string; tag:string; image:string; lat:number; lon:number; country:string; tagline:string; description:string; story:string; facts:string[][]; source:string; model:string; path?:number[]; countryCodes?:string[]; components?:number[][]; photoCredit?:string; descriptionLanguage?:string; region?:string; attribution?:string; retrieved?:string };
 export const places:Place[] = [
 {id:'wall',name:'万里长城',en:'THE GREAT WALL',location:'中国 · 北京',category:'culture',tag:'世界文化遗产',image:'/images/wall.jpg',lat:40.43,lon:116.57,country:'中国',tagline:'山脊之上，读懂一段文明。',description:'顺着山势蜿蜒的城墙，把关隘、烽火台与群山连成一条壮阔的线。长城既是古代防御工程，也留下了不同时代的营造智慧与边地生活的记忆。',story:'把目光放慢，留意砖石的纹理、敌楼的结构，以及城墙怎样因地制宜地与山脊相依。慕田峪、八达岭等不同段落，都呈现了各自的山地风景。',facts:[['遗产类型','文化遗产'],['列入名录','1987 年'],['所在区域','中国北方']],source:'438',model:'wall',path:[100000,110000]},
 {id:'kyoto',name:'京都古都',en:'ANCIENT KYOTO',location:'日本 · 京都',category:'culture',tag:'世界文化遗产',image:'/images/kyoto.jpg',lat:35.01,lon:135.77,country:'日本',tagline:'在庭园与古寺之间，听见时间。',description:'京都的古建筑与庭园，保留了日本不同时期的建筑和园林传统。木构、苔庭、回廊与借景，共同构成一部可以步行阅读的文化史。',story:'古京都历史遗迹分布在京都、宇治与大津。与其匆匆走遍所有地方，不如选一座庭园，留意建筑如何框住山色，以及石、砂、水与植物怎样组织空间。',facts:[['遗产类型','文化遗产'],['列入名录','1994 年'],['文化线索','木构 · 庭园']],source:'688',model:'temple'},
@@ -15,3 +15,9 @@ export const regionText:Record<string,{en:string;description:string}>={
 '日本':{en:'JAPAN · EAST ASIA',description:'从山间的古寺到安静的庭园，在季节的流转中发现日本文化。点击京都地标，开启古都文化图鉴。'},
 '意大利':{en:'ITALY · EUROPE',description:'在古罗马建筑与城市广场之间，沿着街巷阅读历史。点击罗马地标，开始一场建筑与文明的漫游。'}
 };
+
+export type DetailedModel={heritage:string;uid:string;title:string;kind:string;author:string;authorUrl:string;url:string;embed:string;license:string;licenseUrl:string;licenseSlug:string;faces:number;verified:string};
+export const models:DetailedModel[]=[];
+export let heritageCoverage:any={};
+export const libraryReady=Promise.all([fetch('/data/heritage.json').then(r=>{if(!r.ok)throw Error('文化图鉴暂时无法加载');return r.json()}),fetch('/data/model-registry.json').then(r=>r.json()),fetch('/data/heritage-coverage.json').then(r=>r.json())]).then(([catalog,registry,coverage])=>{heritageCoverage=coverage;models.push(...registry);const curatedSources=new Set(places.map(p=>p.source));places.forEach(p=>{const record=catalog.find((r:Place)=>r.source===p.source);if(record){p.countryCodes=record.countryCodes;p.components=p.id==='qingcheng'||p.id==='dujiangyan'?[[p.lon,p.lat]]:record.components;p.region=record.region}});places.push(...catalog.filter((p:Place)=>!curatedSources.has(p.source)));return places});
+export const detailedModel=(place:Place)=>models.find(m=>m.heritage===place.source);
