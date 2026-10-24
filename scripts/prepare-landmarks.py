@@ -5,6 +5,7 @@ Keep individual Wikidata item URLs so users can inspect the original claims.
 import json,re,collections,datetime
 from pathlib import Path
 out=Path('public/data')
+snapshot=Path('data/landmarks.json')
 read=lambda name:json.load(open('/private/tmp/mobius-'+name+'.json'))['results']['bindings']
 value=lambda row,key:row.get(key,{}).get('value','')
 simplify=lambda text:text.translate(str.maketrans({'遺':'遗','館':'馆','藝':'艺','術':'术','國':'国','園':'园','廣':'广','場':'场','門':'门','樓':'楼','廟':'庙','觀':'观','橋':'桥','聖':'圣','龍':'龙','馬':'马','麗':'丽','雲':'云','巖':'岩','寶':'宝','達':'达','臺':'台','灣':'湾','長':'长','區':'区','峽':'峡','溝':'沟','慶':'庆','漢':'汉','開':'开','興':'兴','會':'会','蘇':'苏','雙':'双','鍾':'钟','鐘':'钟','寧':'宁','實':'实','歷':'历','蘭':'兰','爾':'尔','爲':'为','為':'为','與':'与','於':'于','東':'东','樂':'乐','聲':'声','鐵':'铁','羅':'罗','維':'维','紀':'纪','盧':'卢','礦':'矿','蓋':'盖','殿':'殿','宮':'宫','壽':'寿','壇':'坛','鄉':'乡','圓':'圆','齋':'斋','幣':'币','護':'护','濕':'湿','熱':'热','歡':'欢','義':'义','軍':'军','愛':'爱','絲':'丝','華':'华','濱':'滨','岡':'冈','嶺':'岭','樹':'树','萬':'万','叢':'丛','夢':'梦','蘆':'芦','蓮':'莲','棲':'栖','風':'风','飛':'飞','陳':'陈','張':'张','莊':'庄','陸':'陆','嶽':'岳','遊':'游','裡':'里','貝':'贝','彌':'弥','薩':'萨','德':'德','審':'审'}))
@@ -12,7 +13,7 @@ codes={value(r,'country'):value(r,'code') for r in read('country-codes')}
 countries={c['alpha2']:c['name'] for c in json.load(open(out/'country-index.json'))}
 rows=read('landmarks'); china=read('china-landmarks'); famous=read('famous');
 extras=[(name,read(name)) for name in ['china-local','global-museums','global-places']]
-baseline={p['id']:p for p in json.load(open(out/'landmarks.json'))} if (out/'landmarks.json').exists() else {}
+baseline={p['id']:p for p in json.load(open(snapshot))} if snapshot.exists() else {}
 famous_ids={value(r,'item') for r in famous}
 # A city, station or school is not a visitor attraction merely because it has coordinates.
 allowed=r'文物保护|文物保護|文化遺產|文化遗产|摩天大樓|摩天大楼|^塔$|^山$|^湖泊$|^石窟$|古桥|古橋|广场|廣場|博物|美術館|美术馆|藝術館|艺术馆|纪念馆|紀念館|公園|公园|花園|花园|園林|园林|植物園|植物园|动物园|動物園|水族|寺廟|寺庙|佛寺|道觀|道观|宫殿|宮殿|皇宮|皇宫|陵墓|陵寝|考古|古遺址|古遗址|遺址|遗址|古城|歷史建築|历史建筑|历史街区|歷史街區|旅遊景|旅游景|風景|风景|自然保護|自然保护|国家森林|國家森林|地質公園|地质公园|世界遗产|世界遺產|教堂|大教堂|清真寺|紀念碑|纪念碑|城堡|museum|gallery|palace|castle|temple|monument|archaeological|botanical|national park|tourist attraction|heritage site|historic building|historic district|zoo|aquarium|pagoda|garden|cave|waterfall|mountain|觀景|观景'
@@ -55,7 +56,7 @@ for p in places:
   p['importance']=max(old.get('importance',0),p.get('importance',0));p['en']=p['en'] or old.get('en','');p['countryCodes']=sorted(set(old.get('countryCodes',[])+p['countryCodes']))
  baseline[p['id']]=p
 places=list(baseline.values());places.sort(key=lambda p:-p['importance'])
-(out/'landmarks.json').write_text(json.dumps(places,ensure_ascii=False,separators=(',',':')))
+snapshot.write_text(json.dumps(places,ensure_ascii=False,separators=(',',':')))
 stats=dict(records=len(places),countries=len(set(p['country'] for p in places)),china=sum('CN' in p['countryCodes'] for p in places),categories=dict(collections.Counter(p['subtype'] for p in places)),retrieved='2026-10-24',previousRecords=10933,addedSincePrevious=len(places)-10933,queries=[{'name':n,'rows':len(r),'limit':10000 if n=='china-local' else 6500} for n,r in extras],source='Wikidata',license='CC0',sourceUrl='https://www.wikidata.org/wiki/Wikidata:Licensing')
 (out/'landmark-coverage.json').write_text(json.dumps(stats,ensure_ascii=False,indent=2))
 print(json.dumps(stats,ensure_ascii=False))
