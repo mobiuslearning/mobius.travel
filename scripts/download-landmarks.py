@@ -15,6 +15,12 @@ queries.update({
 'global-museums':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?country ?links ?typeLabel WHERE {VALUES ?type {wd:Q33506 wd:Q207694} ?item wdt:P31 ?type; wdt:P625 ?coord; wdt:P17 ?country; wikibase:sitelinks ?links. FILTER(?links>=3 && ?links<10) OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 6500''',
 'global-places':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?country ?links ?typeLabel WHERE {VALUES ?type {wd:Q22746 wd:Q5393308 wd:Q44613 wd:Q43501 wd:Q167346 wd:Q16560 wd:Q44539 wd:Q839954 wd:Q34038 wd:Q35509 wd:Q483453} ?item wdt:P31 ?type; wdt:P625 ?coord; wdt:P17 ?country; wikibase:sitelinks ?links. FILTER(?links>=3) OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 6500'''
 })
+queries.update({
+'china-zero':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?links ?typeLabel WHERE {?item wdt:P17 wd:Q148; wdt:P625 ?coord; wikibase:sitelinks ?links; wdt:P31 ?type. FILTER(?links=0) OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 12000''',
+'china-heritage-gaps':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?links ?typeLabel WHERE {BIND(wd:Q10300916 AS ?type) ?item wdt:P31 ?type; wdt:P625 ?coord. FILTER NOT EXISTS {?item wdt:P17 wd:Q148} OPTIONAL {?item wikibase:sitelinks ?links} OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 4000''',
+'china-nature-local':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?links ?typeLabel WHERE {VALUES ?type {wd:Q8502 wd:Q23397 wd:Q34038 wd:Q35509 wd:Q22698 wd:Q22746 wd:Q167346 wd:Q43501} ?item wdt:P31 ?type; wdt:P17 wd:Q148; wdt:P625 ?coord. OPTIONAL {?item wikibase:sitelinks ?links} OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 6000''',
+'china-scenic':'''SELECT ?item ?itemLabel ?itemDescription ?coord ?image ?links ?typeLabel WHERE {VALUES ?type {wd:Q10925991 wd:Q6838244} ?item wdt:P31 ?type; wdt:P625 ?coord. OPTIONAL {?item wikibase:sitelinks ?links} OPTIONAL {?item wdt:P18 ?image} SERVICE wikibase:label {bd:serviceParam wikibase:language "zh,en"}} LIMIT 3000'''
+})
 parser=argparse.ArgumentParser();parser.add_argument('--only',nargs='+',choices=list(queries));args=parser.parse_args()
 for name,query in queries.items():
  if args.only and name not in args.only:continue

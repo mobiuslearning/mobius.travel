@@ -2,7 +2,9 @@ export type Geometry={type:string;coordinates:any};
 export const polygons=(g:Geometry):number[][][][]=>g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[];
 const wrap=(lon:number,anchor:number)=>{while(lon-anchor>180)lon-=360;while(lon-anchor< -180)lon+=360;return lon};
 export function inRing(lon:number,lat:number,ring:number[][]){const anchor=ring[0]?.[0]||0;lon=wrap(lon,anchor);let c=false;for(let i=0,j=ring.length-1;i<ring.length;j=i++){const ax=wrap(ring[i][0],anchor),ay=ring[i][1],bx=wrap(ring[j][0],anchor),by=ring[j][1];if(Math.abs(ax-lon)<1e-9&&Math.abs(ay-lat)<1e-9)return true;if((ay>lat)!==(by>lat)&&lon<(bx-ax)*(lat-ay)/(by-ay)+ax)c=!c}return c}
-export function contains(g:Geometry,lon:number,lat:number){return polygons(g).some(p=>inRing(lon,lat,p[0])&&!p.slice(1).some(h=>inRing(lon,lat,h)))}
+const boxCache=new WeakMap<Geometry,number[][]>();
+export function envelopeContains(g:Geometry,lon:number,lat:number){let boxes=boxCache.get(g);if(!boxes){boxes=polygons(g).map(p=>bounds({type:'Polygon',coordinates:p}));boxCache.set(g,boxes)}return boxes.some(([a,b,c,d])=>{const x=wrap(lon,(a+c)/2);return x>=a&&x<=c&&lat>=b&&lat<=d})}
+export function contains(g:Geometry,lon:number,lat:number){return envelopeContains(g,lon,lat)&&polygons(g).some(p=>inRing(lon,lat,p[0])&&!p.slice(1).some(h=>inRing(lon,lat,h)))}
 export function ringArea(r:number[][]){let s=0;const anchor=r[0]?.[0]||0;for(let i=1;i<r.length;i++)s+=wrap(r[i-1][0],anchor)*r[i][1]-wrap(r[i][0],anchor)*r[i-1][1];return Math.abs(s/2)*Math.cos((r.reduce((s,p)=>s+p[1],0)/r.length)*Math.PI/180)}
 export function largestPolygon(g:Geometry){return polygons(g).reduce((a,b)=>!a||ringArea(b[0])>ringArea(a[0])?b:a,null as number[][][]|null)}
 export function bounds(g:Geometry){const p=largestPolygon(g);if(!p)return[-180,-90,180,90];const anchor=p[0][0][0];let a=Infinity,b=Infinity,c=-Infinity,d=-Infinity;for(const [x,y] of p[0]){const lon=wrap(x,anchor);a=Math.min(a,lon);b=Math.min(b,y);c=Math.max(c,lon);d=Math.max(d,y)}return[a,b,c,d]}
