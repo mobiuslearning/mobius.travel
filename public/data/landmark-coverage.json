@@ -1,17 +1,40 @@
 {
-  "records": 10933,
-  "countries": 185,
-  "china": 3493,
+  "records": 28032,
+  "countries": 196,
+  "china": 9952,
   "categories": {
-    "nature": 2168,
-    "landmark": 2502,
-    "historic": 4008,
-    "park": 1096,
-    "museum": 1159
+    "nature": 2715,
+    "landmark": 5215,
+    "historic": 10166,
+    "park": 2853,
+    "museum": 7083
   },
   "retrieved": "2026-10-24",
+  "previousRecords": 10933,
+  "addedSincePrevious": 17099,
+  "queries": [
+    {
+      "name": "china-local",
+      "rows": 6756,
+      "limit": 10000
+    },
+    {
+      "name": "global-museums",
+      "rows": 6500,
+      "limit": 6500
+    },
+    {
+      "name": "global-places",
+      "rows": 6500,
+      "limit": 6500
+    }
+  ],
   "source": "Wikidata",
   "license": "CC0",
   "sourceUrl": "https://www.wikidata.org/wiki/Wikidata:Licensing",
-  "chinaCities": 370
+  "chinaCities": 428,
+  "chinaCounties": 1956,
+  "overseasLocated": 8383,
+  "indexBytes": 9340393,
+  "fullBytes": 30217616
 }
