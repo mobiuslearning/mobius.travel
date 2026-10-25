@@ -1,0 +1,50 @@
+{
+  "records": 34215,
+  "countries": 196,
+  "china": 16135,
+  "categories": {
+    "nature": 6162,
+    "landmark": 5281,
+    "historic": 12825,
+    "park": 2864,
+    "museum": 7083
+  },
+  "retrieved": "2026-10-24",
+  "previousRecords": 28032,
+  "previousChina": 9952,
+  "addedSincePrevious": 6183,
+  "queries": [
+    {
+      "name": "china-zero",
+      "rows": 12000,
+      "limit": 12000
+    },
+    {
+      "name": "china-heritage-gaps",
+      "rows": 6,
+      "limit": 4000
+    },
+    {
+      "name": "china-nature-local",
+      "rows": 6000,
+      "limit": 6000
+    },
+    {
+      "name": "china-scenic",
+      "rows": 279,
+      "limit": 3000
+    }
+  ],
+  "source": "Wikidata",
+  "license": "CC0",
+  "sourceUrl": "https://www.wikidata.org/wiki/Wikidata:Licensing",
+  "chinaByProvince": 16229,
+  "chinaCities": 453,
+  "chinaCounties": 2235,
+  "overseasLocated": 8403,
+  "addedChina": 6183,
+  "chinaProvinces": 34,
+  "chinaPrefectures": 352,
+  "indexBytes": 11217532,
+  "fullBytes": 36812514
+}
